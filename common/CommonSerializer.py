@@ -1,0 +1,44 @@
+from rest_framework import serializers
+from django.contrib.auth.models import User
+
+
+# registration
+class RegistrationSerializer(serializers.ModelSerializer):
+    # username = serializers.CharField(
+    #     max_length=100,
+    #     style={'input_type': 'username', 'placeholder': '사용자 아이디', 'autofocus': True}
+    # )
+    # password = serializers.CharField(
+    #     max_length=100,
+    #     style={'input_type': 'password', 'placeholder': '비밀번호'}
+    # )
+    # email = serializers.EmailField(
+    #     max_length=100,
+    #     style={'input_type': 'Email', 'placeholder': '이메일'}
+    # )
+    password2 = serializers.CharField(
+        style={'input_type': 'password', 'placeholder': '비민번호 확인'},
+        write_only=True
+    )
+
+    class Meta:
+        model = User
+        fields = ["username", "password", 'password2', 'email']
+        extra_kwargs = {
+            'password': {'write_only': True}
+        }
+
+    def save(self):
+        account = User(
+            email=self.validated_data['email'],
+            username=self.validated_data['username']
+        )
+        password = self.validated_data['password']
+        password2 = self.validated_data['password2']
+
+        if password != password2:
+            raise serializers.ValidationError({"password": "비밀번호가 일치하지 않습니다."})
+
+        account.set_password(password)
+        account.save()
+        return account

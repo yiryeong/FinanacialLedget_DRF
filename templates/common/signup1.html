@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load rest_framework %}
+
+{% block content %}
+    <form action="{% url 'common:signup' %}" method="post" novalidate>
+        {% csrf_token %}
+        {% render_form serializer template_pack='rest_framework/vertical' %}
+        <button type="submit" class="btn btn-default">생성하기</button>
+    </form>
+{% endblock %}
