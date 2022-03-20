@@ -138,6 +138,10 @@ LOGOUT_REDIRECT_URL = '/'
 
 
 REST_FRAMEWORK = {
+    # DRF에서 제공해주는 pagination을 사용하기 위한 설정
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    # pagination을 몇개씩 보여줄 지 설정
+    'PAGE_SIZE': 10,
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_RENDERER_CLASSES': [
@@ -154,8 +158,8 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
-        # 'rest_framework.permissions.IsAuthenticated',
+        # 'rest_framework.permissions.AllowAny',
+        'rest_framework.permissions.IsAuthenticated',
     ]
 
 }

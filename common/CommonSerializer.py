@@ -24,17 +24,18 @@ class RegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["username", "password", 'password2', 'email']
+        # 비밀번호는 보안상 암호화가 되었다 하더라도 클라이언트 측에 전달하지 못하게 하기 위해 write_only를 사용
         extra_kwargs = {
             'password': {'write_only': True}
         }
 
-    def save(self):
+    def create(self, validated_data):
         account = User(
-            email=self.validated_data['email'],
-            username=self.validated_data['username']
+            email=validated_data['email'],
+            username=validated_data['username']
         )
-        password = self.validated_data['password']
-        password2 = self.validated_data['password2']
+        password = validated_data['password']
+        password2 = validated_data['password2']
 
         if password != password2:
             raise serializers.ValidationError({"password": "비밀번호가 일치하지 않습니다."})
@@ -42,3 +43,11 @@ class RegistrationSerializer(serializers.ModelSerializer):
         account.set_password(password)
         account.save()
         return account
+
+    def update(self, instance, validated_data):
+        instance.email = validated_data.get('email', instance.email)
+        instance.username = validated_data.get('username', instance.username)
+        instance.password = validated_data.get('password', instance.password)
+        instance.save()
+        return instance
+
