@@ -54,7 +54,7 @@ def profile(request, profile_id):
         serializer = RegistrationSerializer(user, data=request.data, partial=True)
         if serializer.is_valid(raise_exception=True):
             # .save()는 해당 인스턴스가 데이터 베이스가 존재하는 경우, update 함수를 사용하여 인스턴스를 업데이트한다.
-            user_modified = serializer.save()
+            serializer.save()
             return redirect('common:profile', profile_id=user.id)
 
         return redirect('common:profile', error=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
