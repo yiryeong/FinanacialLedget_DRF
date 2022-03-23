@@ -28,7 +28,7 @@
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="7d61f110-8d51-409d-bfbb-1c2e277e2f4e">
-      <console name="Connection" type="STANDARD" schema="mysql" session="Main"><![CDATA[select * from `DRF_FinancialLedger`.auth_user;]]></console>
+      <console name="Connection" type="STANDARD" schema="mysql" session="Main"><![CDATA[select * from `DRF_FinancialLedger`.category_category;]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">

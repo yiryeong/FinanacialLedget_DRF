@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container my-3">
+    <!-- 검색, 정렬 -->
+    <div class="row justify-content-between my-3">
+        <div class="col-5">
+            <form id="searchForm" method="get" action="{% url 'category:list' %}" class="col-12">
+                <div class="input-group">
+                    <input type="text" class="form-control search_category" id="search_category" name="search_category" value="{{ search_category|default_if_none:'' }}"  placeholder="카테고리명 검색">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button"  id="btn_search">검색</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-5">
+            <form class="col-12" id="addForm" method="post" action="{% url 'category:list' %}">
+                {% csrf_token %}
+                <div class="input-group">
+                    <input type="text" class="form-control add_category" id="add_category" name="add_category" value=""  placeholder="카테고리명 추가">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-info" type="button"  id="btn_add">추가</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 리스트 테이블 -->
+    <table class="table">
+        <thead>
+        <tr class="thead-dark text-center">
+            <th>카테고리명</th>
+            <th>버튼</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if category_list %}
+            {% for category in category_list %}
+                <tr class="text-center">
+                    <form method="post" id="changeForm" action="{% url 'category:modify' category.id %}">
+                        {% csrf_token %}
+                        <td> <input type="text" class="form-control" id="name{{ category.id }}" name="change_category" value="{{ category.category_name }}"> </td>
+                        <td>
+                            <button class="btn btn-outline-info modify" type="submit">수정</button>
+                            <button class="btn btn-outline-danger delete" data-uri="{% url 'category:delete' category.id %}">삭제</button>
+                        </td>
+                    </form>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td><span> 조회 데이터가 없습니다.</span></td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+{% block script %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#btn_search').on('click', function() {
+                $('#search_category').val($('.search_category').val());
+                $('#searchForm').submit();
+            });
+            $('#btn_add').on('click', function() {
+                $('#add_category').val($('.add_category').val());
+                $('#addForm').submit();
+            });
+            $('.modify').on('click', function() {
+                $('#changeForm').submit();
+            });
+            $('.delete').on('click', function() {
+                if(confirm('정말 삭제하시겠습니까?')) {
+                    location.href = $(this).data('uri');
+                }
+            });
+        });
+    </script>
+{% endblock %}
+
