@@ -21,21 +21,21 @@ def category(request):
         category_list = Category.objects.filter(uid=user)
 
         # page = request.GET.get('page', '1')
-        category_name = request.GET.get('search_category', '')
+        name = request.GET.get('search_category', '')
 
-        if category_name:
-            category_list = category_list.filter(Q(category_name__icontains=category_name)).distinct()
+        if name:
+            category_list = category_list.filter(Q(name__icontains=name)).distinct()
 
         serializer = CategorySerializer(category_list, many=True)
         # # paging
         # paginator = Paginator(category_list, 10)  # 페이지당 10개씩 보여 주기
         # page_obj = paginator.get_page(page)
 
-        return render(request, 'category/list.html', {'category_list': serializer.data, 'search_category': category_name})
+        return render(request, 'category/list.html', {'category_list': serializer.data, 'search_category': name})
     elif request.method == 'POST':
         user_id = request.user.id
         category_info = {
-            'category_name': request.POST['add_category'],
+            'name': request.POST['add_category'],
             'uid': user_id,
         }
         serializer = CategorySerializer(data=category_info)
@@ -52,16 +52,16 @@ def category_modify(request, category_id):
     :param request:
     :return:
     """
-    category = get_object_or_404(Category, pk=category_id)
+    modified_category = get_object_or_404(Category, pk=category_id)
 
-    if request.user != category.uid:
+    if request.user != modified_category.uid:
         messages.error(request, '수정권한이 없습니다.')
     else:
         data = {
-            'category_name': request.POST['change_category']
+            'name': request.POST['change_category']
         }
 
-        serializer = CategorySerializer(category, data=data, partial=True)
+        serializer = CategorySerializer(modified_category, data=data, partial=True)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return redirect('category:list')
@@ -75,10 +75,10 @@ def category_delete(request, category_id):
     :param request:
     :return:
     """
-    category = get_object_or_404(Category, pk=category_id)
+    deleted_category = get_object_or_404(Category, pk=category_id)
 
-    if request.user != category.uid:
+    if request.user != deleted_category.uid:
         messages.error(request, '삭제권한이 없습니다.')
     else:
-        category.delete()
+        deleted_category.delete()
     return redirect('category:list')

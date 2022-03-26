@@ -42,10 +42,10 @@
                 <tr class="text-center">
                     <form method="post" id="changeForm" action="{% url 'category:modify' category.id %}">
                         {% csrf_token %}
-                        <td> <input type="text" class="form-control" id="name{{ category.id }}" name="change_category" value="{{ category.category_name }}"> </td>
+                        <td> <input type="text" class="form-control" id="name{{ category.id }}" name="change_category" value="{{ category.name }}"> </td>
                         <td>
                             <button class="btn btn-outline-info modify" type="submit">수정</button>
-                            <button class="btn btn-outline-danger delete" data-uri="{% url 'category:delete' category.id %}">삭제</button>
+                            <a class="btn btn-outline-danger delete" href="{% url 'category:delete' category.id %}">삭제</a>
                         </td>
                     </form>
                 </tr>
@@ -72,11 +72,6 @@
             });
             $('.modify').on('click', function() {
                 $('#changeForm').submit();
-            });
-            $('.delete').on('click', function() {
-                if(confirm('정말 삭제하시겠습니까?')) {
-                    location.href = $(this).data('uri');
-                }
             });
         });
     </script>
