@@ -34,8 +34,7 @@ def expenditure(request):
                 Q(product__icontains=kw) |
                 Q(memo__icontains=kw) |
                 Q(price__icontains=kw) |
-                Q(place__icontains=kw) |
-                Q(cid__icontains=kw)
+                Q(place__icontains=kw)
             )
 
         if search_date:
