@@ -3,8 +3,8 @@ from django.shortcuts import render, redirect
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
 from category.models import Category
-from .models import Expenditure
-from .ExpenditureSerializer import ExpenditureSerializer
+from ..models import Expenditure
+from ..ExpenditureSerializer import ExpenditureSerializer
 from datetime import date, datetime, timedelta
 
 
@@ -24,9 +24,10 @@ def expenditure(request):
         search_date = request.GET.get('search_date', today)
         kw = request.GET.get('kw', '')
         selected_category = request.GET.get('selected_category', '0')
+        date_scope = int(request.GET.get('date_scope', '7'))
 
         end_date = datetime.strptime(search_date, "%Y-%m-%d")
-        start_date = end_date - timedelta(weeks=1)
+        start_date = end_date - timedelta(days=date_scope)
 
         expenditure_list = Expenditure.objects.filter(uid=user, pay_date__range=[start_date, search_date])
 
@@ -52,29 +53,5 @@ def expenditure(request):
         # paginator = Paginator(expenditure_list, 10)  # 페이지당 10개씩 보여 주기
         # page_obj = paginator.get_page(page)
 
-        context = {'expenditure_list': serializer.data, 'category_list': category_list, "selected_category": selected_category, "search_date": search_date}
+        context = {'expenditure_list': serializer.data, 'category_list': category_list, "selected_category": int(selected_category), "search_date": search_date, "date_scope": date_scope, "kw": kw}
         return render(request, 'expenditure/list.html', context)
-
-    elif request.method == 'POST':
-        user_id = request.user.id
-        post_data = request.POST
-
-        expenditure_info = {
-            'pay_date': post_data['pay_date'],
-            'uid': user_id,
-            'price': post_data['price'],
-            'product': post_data['product'],
-            'cid': post_data['category_id'],
-        }
-
-        if post_data['place']:
-            expenditure_info.place = post_data['place']
-
-        if post_data['memo']:
-            expenditure_info.place = post_data['memo']
-
-        serializer = ExpenditureSerializer(data=expenditure_info)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return redirect('expenditure:list')
-
