@@ -8,5 +8,6 @@ app_name = 'expenditure'
 urlpatterns = [
     path('', base_views.expenditure, name='list'),
     path('add_item/', add_item_views.add_item, name='add_item'),
+    path('add_item/<item_id>', add_item_views.update_item, name='update_item'),
     # path('<int:category_id>', views.expenditure_detail, name='detail'),
 ]
