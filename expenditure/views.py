@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from category.models import Category
 from .models import Expenditure
 from .ExpenditureSerializer import ExpenditureSerializer
+from datetime import date, datetime, timedelta
 
 
 @permission_classes([IsAuthenticated])
@@ -16,13 +17,18 @@ def expenditure(request):
     """
     if request.method == 'GET':
         user = request.user
-        expenditure_list = Expenditure.objects.filter(uid=user)
         category_list = Category.objects.filter(uid=user)
+        today = date.today().strftime("%Y-%m-%d")
 
         # page = request.GET.get('page', '1')
-        search_date = request.GET.get('search_date', '')
+        search_date = request.GET.get('search_date', today)
         kw = request.GET.get('kw', '')
         selected_category = request.GET.get('selected_category', '0')
+
+        end_date = datetime.strptime(search_date, "%Y-%m-%d")
+        start_date = end_date - timedelta(weeks=1)
+
+        expenditure_list = Expenditure.objects.filter(uid=user, pay_date__range=[start_date, search_date])
 
         if selected_category != '0':
             expenditure_list = expenditure_list.filter(
@@ -37,11 +43,6 @@ def expenditure(request):
                 Q(place__icontains=kw)
             )
 
-        if search_date:
-            expenditure_list = expenditure_list.filter(
-                Q(pay_date=search_date)
-            )
-
         serializer = ExpenditureSerializer(expenditure_list, many=True)
 
         for data in serializer.data:
@@ -51,7 +52,9 @@ def expenditure(request):
         # paginator = Paginator(expenditure_list, 10)  # 페이지당 10개씩 보여 주기
         # page_obj = paginator.get_page(page)
 
-        return render(request, 'expenditure/list.html', {'expenditure_list': serializer.data, 'category_list': category_list, "selected_category": selected_category})
+        context = {'expenditure_list': serializer.data, 'category_list': category_list, "selected_category": selected_category, "search_date": search_date}
+        return render(request, 'expenditure/list.html', context)
+
     elif request.method == 'POST':
         user_id = request.user.id
         post_data = request.POST
