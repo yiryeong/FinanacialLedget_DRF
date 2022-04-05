@@ -11,43 +11,39 @@
         </div>
       </div>
 
-    {% if expenditure %}
-      {% for e in expenditure %}
-        <div class="form-group">
-          <label for="pay_date">구매날짜</label>
-          <input type="date" class="form-control" name="pay_date" id="pay_date" value="{{ e.pay_date }}">
-        </div>
+      <div class="form-group">
+        <label for="pay_date">구매날짜</label>
+        <input type="date" class="form-control" name="pay_date" id="pay_date" value="{{ expenditure.pay_date }}">
+      </div>
 
-        <div class="form-group">
-          <label for="category">카테고리</label>
-          <select class="form-control category" name="category" id="category">
-            <option value="0">카테고리 선택</option>
-            {% if category_list %}
-              {% for category in category_list %}
-                <option value="{{ category.id }}" {% if e.cid == category.id %} selected {% endif %} > {{ category.name }} </option>
-              {% endfor %}
-            {% endif %}
-          </select>
-        </div>
+      <div class="form-group">
+        <label for="category">카테고리</label>
+        <select class="form-control category" name="category" id="category">
+          <option value="0">카테고리 선택</option>
+          {% if category_list %}
+            {% for category in category_list %}
+              <option value="{{ category.id }}" {% if expenditure.cid == category.id %} selected {% endif %} > {{ category.name }} </option>
+            {% endfor %}
+          {% endif %}
+        </select>
+      </div>
 
-        <div class="form-group">
-          <label for="product">상품명</label>
-          <input type="text" class="form-control" name="product" id="product" value="{{ e.product | default_if_none:'' }}">
-        </div>
-        <div class="form-group">
-          <label for="price">가격</label>
-          <input type="text" class="form-control" name="price" id="price" value="{{ e.price | default_if_none:'' }}">
-        </div>
-        <div class="form-group">
-          <label for="place">구매처</label>
-          <input type="text" class="form-control" name="place" id="place" value="{{ e.place | default_if_none:'' }}">
-        </div>
-        <div class="form-group">
-          <label for="memo">메모</label>
-          <input type="text" class="form-control" name="memo" id="memo" value="{{ e.memo | default_if_none:'' }}">
-        </div>
-      {% endfor %}
-    {% endif %}
+      <div class="form-group">
+        <label for="product">상품명</label>
+        <input type="text" class="form-control" name="product" id="product" value="{{ expenditure.product | default_if_none:'' }}">
+      </div>
+      <div class="form-group">
+        <label for="price">가격</label>
+        <input type="text" class="form-control" name="price" id="price" value="{{ expenditure.price | default_if_none:'' }}">
+      </div>
+      <div class="form-group">
+        <label for="place">구매처</label>
+        <input type="text" class="form-control" name="place" id="place" value="{{ expenditure.place | default_if_none:'' }}">
+      </div>
+      <div class="form-group">
+        <label for="memo">메모</label>
+        <input type="text" class="form-control" name="memo" id="memo" value="{{ expenditure.memo | default_if_none:'' }}">
+      </div>
 
     <button type="submit" class="btn btn-primary">수정</button>
     <a class="btn btn-primary" href="{% url 'expenditure:list' %}">뒤로 가기</a>
