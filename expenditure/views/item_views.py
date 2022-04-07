@@ -1,8 +1,6 @@
 from datetime import date
 from django.contrib import messages
-from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from requests import Response
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
 from category.models import Category
@@ -56,7 +54,6 @@ def update_item(request, item_id):
     """
     user = request.user
     expenditure = Expenditure.objects.get(pk=item_id)
-    print(request.method, 'update')
 
     if request.method == 'GET':
 
@@ -100,7 +97,7 @@ def delete_item(request, item_id):
     """
     user = request.user
     expenditure = get_object_or_404(Expenditure, pk=item_id)
-    print('delete')
+
     if user != expenditure.uid:
         messages.error(request, '삭제권한이 없습니다.')
 
